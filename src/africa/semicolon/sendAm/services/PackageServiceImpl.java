@@ -29,8 +29,8 @@ public class PackageServiceImpl implements PackageService{
         order1.setName(packageOrder.getWhatToOrder());
         order1.setWeightInGrammes(packageOrder.getQuantity());
 
-        packageStatus.setStatus("Pending");
-        var dateTime = packageStatus.getDateTime();
+//        packageStatus.setStatus("Pending");
+//        var dateTime = packageStatus.getDateTime();
 //        order.setStatusList(List.of(packageStatus.setStatus("pending")));
 
         user.setEmail(packageOrder.getEmailAddress());
