@@ -24,23 +24,26 @@ public class PackageServiceImpl implements PackageService{
         PackageDescription order1 = new PackageDescription();
         Status packageStatus = new Status();
         User user = new User();
+
+
         order1.setName(packageOrder.getWhatToOrder());
-        order1.setWeightInGrammes(
-                packageOrder.getQuantity());
-        order.setDescription(order1);
+        order1.setWeightInGrammes(packageOrder.getQuantity());
+
         packageStatus.setStatus("Pending");
         var dateTime = packageStatus.getDateTime();
 //        order.setStatusList(List.of(packageStatus.setStatus("pending")));
 
-        user.setEmail(packageOrder.getEmailAddress().toLowerCase());
+        user.setEmail(packageOrder.getEmailAddress());
         order.setOwner(user);
         order.setId(generateId());
+        order.setDescription(order1);
 
-        return getRegisterPackageResponse(order);
+        Package savedPackage = packageRepository.save(order);
+        return getRegisterPackageResponse(order, savedPackage);
     }
 
-    private RegisterPackageResponse getRegisterPackageResponse(Package order) {
-        Package savedPackage = packageRepository.save(order);
+    private RegisterPackageResponse getRegisterPackageResponse(Package order, Package savedPackage) {
+
 
 
         RegisterPackageResponse packageOrder1 = new RegisterPackageResponse();
