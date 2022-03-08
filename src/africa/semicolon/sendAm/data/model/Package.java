@@ -7,7 +7,7 @@ public class Package {
     private int id;
     private User owner;
     private PackageDescription description;
-    private final List <Status> statusList = new ArrayList<>();
+    private  List <Status> statusList = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -35,6 +35,10 @@ public class Package {
 
     public List<Status> getStatusList() {
         return statusList;
+    }
+
+    public void setStatusList(Status status) {
+        statusList.add(status);
     }
 
     @Override

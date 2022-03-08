@@ -19,4 +19,13 @@ public class PackageDescription {
     public void setWeightInGrammes(double weightInGrammes) {
         this.weightInGrammes = weightInGrammes;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PackageDescription{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", weightInGrammes=").append(weightInGrammes);
+        sb.append('}');
+        return sb.toString();
+    }
 }

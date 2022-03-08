@@ -9,6 +9,8 @@ public interface UserRepository {
     void delete(User user);
     void delete(String email);
     List<User> findAll();
+    User save(User user);
 
     int count();
+
 }

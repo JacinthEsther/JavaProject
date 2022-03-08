@@ -1,7 +1,6 @@
 package africa.semicolon.sendAm.data.repositories;
 
 import africa.semicolon.sendAm.data.model.Package;
-import africa.semicolon.sendAm.data.model.PackageRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
