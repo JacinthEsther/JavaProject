@@ -9,7 +9,7 @@ public class RegisterPackageRequest {
         return whatToOrder;
     }
 
-    public void setWhatToOrder(String whatToOrder) {
+    public void setWhatToAdd(String whatToOrder) {
         this.whatToOrder = whatToOrder;
     }
 

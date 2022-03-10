@@ -1,8 +1,10 @@
 package africa.semicolon.sendAm.services;
 
+import africa.semicolon.sendAm.data.model.Package;
+import africa.semicolon.sendAm.dtos.requests.UpdateTrackingInfoRequest;
 import africa.semicolon.sendAm.dtos.requests.RegisterPackageRequest;
 import africa.semicolon.sendAm.dtos.responses.RegisterPackageResponse;
-import africa.semicolon.sendAm.dtos.responses.RegisterUserResponse;
+import africa.semicolon.sendAm.dtos.responses.TrackPackageResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,43 +18,59 @@ class PackageServiceImplTest {
         packageService = new PackageServiceImpl();
     }
     @Test
-    void registerOrder_RegisterOrderContainsOneElement() {
-        RegisterPackageRequest orderDetails = new RegisterPackageRequest();
-        orderDetails.setWhatToOrder("Chocolate");
-        orderDetails.setEmailAddress("esther@gmail.com");
-        orderDetails.setQuantity(2);
-        packageService.registerOrder(orderDetails);
+    void registerAddedPackage_RegisterAddedPackageContainsOneElement() {
+        RegisterPackageRequest packageToBeAdded = new RegisterPackageRequest();
+        packageToBeAdded.setWhatToAdd("Chocolate");
+        packageToBeAdded.setEmailAddress("esther@gmail.com");
+        packageToBeAdded.setQuantity(2);
+        packageService.registerPackage(packageToBeAdded);
         assertEquals(1, packageService.getRepository().count());
     }
 
     @Test
-    void correctOrderIsReturned() {
-        RegisterPackageRequest orderDetails = new RegisterPackageRequest();
-        orderDetails.setWhatToOrder("Chocolate");
-        orderDetails.setEmailAddress("esther@gmail.com");
-        orderDetails.setQuantity(2);
+    void testStatusIsUpdated_WhenANewPackageIsCreatedTest(){
+        savePackage();
+        assertEquals(1, packageService.getRepository().count());
 
-//        RegisterPackageResponse orderReceipt = packageService.registerOrder(orderDetails);
-//        assertEquals(1, orderReceipt.getId());
-//        assertEquals("Chocolate",orderReceipt.getDescription().getName());
-        assertEquals("esther@gmail.com",orderDetails.getEmailAddress());
+        Package savedPackage = packageService.getRepository().findById(1);
+        assertEquals(1, savedPackage.getStatusList().size());
+
+    }
+
+    private void savePackage() {
+        RegisterPackageRequest packageToAdd = new RegisterPackageRequest();
+        packageToAdd.setQuantity(2);
+        packageToAdd.setWhatToAdd("Big Boxers");
+        packageToAdd.setEmailAddress("agboniro@gmail.com");
+
+        packageService.registerPackage(packageToAdd);
+    }
+
+    @Test
+    void correctOrderIsReturned() {
+        RegisterPackageRequest packageDetails = new RegisterPackageRequest();
+        packageDetails.setWhatToAdd("Chocolate");
+        packageDetails.setEmailAddress("esther@gmail.com");
+        packageDetails.setQuantity(2);
+
+        assertEquals("esther@gmail.com",packageDetails.getEmailAddress());
      }
 
      @Test
     public void generateTrackingId(){
         RegisterPackageRequest packageDetails = new RegisterPackageRequest();
-         packageDetails.setWhatToOrder("Chocolate");
+         packageDetails.setWhatToAdd("Chocolate");
          packageDetails.setEmailAddress("esther@gmail.com");
          packageDetails.setQuantity(2);
 
          RegisterPackageRequest packageDetails2 = new RegisterPackageRequest();
-         packageDetails2.setWhatToOrder("Chocolate");
+         packageDetails2.setWhatToAdd("Chocolate");
          packageDetails2.setEmailAddress("jacinth@gmail.com");
          packageDetails2.setQuantity(2);
 
 
-         RegisterPackageResponse trackPackage = packageService.registerOrder(packageDetails);
-         RegisterPackageResponse trackPackage2 = packageService.registerOrder(packageDetails2);
+         RegisterPackageResponse trackPackage = packageService.registerPackage(packageDetails);
+         RegisterPackageResponse trackPackage2 = packageService.registerPackage(packageDetails2);
          assertEquals(1, trackPackage.getId());
          assertEquals(2, trackPackage2.getId());
          assertEquals("SAA/01", trackPackage.getTrackId());
@@ -60,16 +78,24 @@ class PackageServiceImplTest {
      }
 
      @Test
-    public void statusCanBeGotten(){
-         RegisterPackageRequest packageDetails = new RegisterPackageRequest();
-         packageDetails.setWhatToOrder("Chocolate");
-         packageDetails.setEmailAddress("esther@gmail.com");
-         packageDetails.setQuantity(2);
+    public void statusCanBeAddedTest(){
+       savePackage();
 
-         RegisterPackageResponse trackPackage = packageService.registerOrder(packageDetails);
-         assertEquals(1, trackPackage.getId());
-         assertEquals("SAA/01", trackPackage.getTrackId());
-         assertEquals("Pending", trackPackage.checkStatus(trackPackage.getTrackId()));
+       UpdateTrackingInfoRequest trackingRequest = new UpdateTrackingInfoRequest();
+       trackingRequest.setTrackingNumber(1);
+       trackingRequest.setTrackingInfo("Arrived");
+        packageService.updateTrackingInfo(trackingRequest);
+        packageService.updateTrackingInfo(trackingRequest);
+
+        Package savedPackage = packageService.getRepository().findById(1);
+        assertEquals(3, savedPackage.getStatusList().size());
+
+     }
+
+     @Test
+    void trackPackageTest(){
+        savePackage();
+        TrackPackageResponse trackingInfo = packageService.trackPackage(1);
      }
 
 }

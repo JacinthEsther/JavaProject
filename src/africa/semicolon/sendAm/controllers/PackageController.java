@@ -1,8 +1,10 @@
 package africa.semicolon.sendAm.controllers;
 
+import africa.semicolon.sendAm.dtos.requests.UpdateTrackingInfoRequest;
 import africa.semicolon.sendAm.dtos.requests.RegisterPackageRequest;
-import africa.semicolon.sendAm.dtos.responses.FindPackageResponse;
 import africa.semicolon.sendAm.dtos.responses.RegisterPackageResponse;
+import africa.semicolon.sendAm.dtos.responses.TrackPackageResponse;
+import africa.semicolon.sendAm.dtos.responses.UpdateTrackingInfoResponse;
 import africa.semicolon.sendAm.services.PackageService;
 import africa.semicolon.sendAm.services.PackageServiceImpl;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +16,17 @@ public class PackageController {
 
    @PostMapping("/register")
     public RegisterPackageResponse registerNewPackage(@RequestBody RegisterPackageRequest request){
-       return packageService.registerOrder(request);
+       return packageService.registerPackage(request);
    }
 
-   @GetMapping("/{trackingId}")
-    public FindPackageResponse trackPackageByTrackingId(@PathVariable String trackingId){
-       return packageService.findPackageByTrackingId(trackingId);
+   @GetMapping("/{trackingNumber}")
+    public TrackPackageResponse trackPackage(@PathVariable int trackingNumber){
+       return packageService.trackPackage(trackingNumber);
+   }
+
+   @PatchMapping("/{updateStatus}")
+    public UpdateTrackingInfoResponse updateTrackingInfo(@RequestBody UpdateTrackingInfoRequest
+                                                         request){
+       return packageService.updateTrackingInfo(request);
    }
 }

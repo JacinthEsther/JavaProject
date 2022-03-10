@@ -1,13 +1,19 @@
 package africa.semicolon.sendAm.services;
 
 import africa.semicolon.sendAm.data.repositories.PackageRepository;
+import africa.semicolon.sendAm.dtos.requests.UpdateTrackingInfoRequest;
 import africa.semicolon.sendAm.dtos.requests.RegisterPackageRequest;
-import africa.semicolon.sendAm.dtos.responses.FindPackageResponse;
 import africa.semicolon.sendAm.dtos.responses.RegisterPackageResponse;
+import africa.semicolon.sendAm.dtos.responses.TrackPackageResponse;
+import africa.semicolon.sendAm.dtos.responses.UpdateTrackingInfoResponse;
 
 public interface PackageService {
-    RegisterPackageResponse registerOrder(RegisterPackageRequest packageOrder);
+    RegisterPackageResponse registerPackage(RegisterPackageRequest packageOrder);
     PackageRepository getRepository();
 
-    FindPackageResponse findPackageByTrackingId(String trackingId);
+    UpdateTrackingInfoResponse updateTrackingInfo(UpdateTrackingInfoRequest trackingRequest);
+
+    TrackPackageResponse trackPackage(int trackingNumber);
+
+//    FindPackageResponse findPackageByTrackingId(String trackingId);
 }

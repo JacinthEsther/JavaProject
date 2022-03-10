@@ -7,7 +7,7 @@ public class Package {
     private int id;
     private User owner;
     private PackageDescription description;
-    private  List <Status> statusList = new ArrayList<>();
+    private final List <Status> statusList = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -37,9 +37,6 @@ public class Package {
         return statusList;
     }
 
-    public void setStatusList(Status status) {
-        statusList.add(status);
-    }
 
     @Override
     public String toString() {

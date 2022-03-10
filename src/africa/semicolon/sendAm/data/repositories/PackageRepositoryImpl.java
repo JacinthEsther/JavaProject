@@ -8,10 +8,24 @@ private List <Package> db = new ArrayList<>();
 private int id = 0;
     @Override
     public Package save(Package aPackage) {
-       int id = generateId();
-       aPackage.setId(id);
-       db.add(aPackage);
+
+        if(aPackage.getId()== 0) saveNew(aPackage);
+
+        else update(aPackage);
+
       return aPackage;
+    }
+
+    private void saveNew(Package aPackage) {
+        int id = generateId();
+        aPackage.setId(id);
+        db.add(aPackage);
+    }
+
+    private Package update(Package aPackage) {
+        delete(aPackage.getId());
+        db.add(aPackage);
+        return aPackage;
     }
 
     private int generateId() {

@@ -6,11 +6,11 @@ import africa.semicolon.sendAm.data.model.Status;
 import africa.semicolon.sendAm.data.repositories.PackageRepositoryImpl;
 import africa.semicolon.sendAm.data.model.User;
 import africa.semicolon.sendAm.data.repositories.PackageRepository;
+import africa.semicolon.sendAm.dtos.requests.UpdateTrackingInfoRequest;
 import africa.semicolon.sendAm.dtos.requests.RegisterPackageRequest;
-import africa.semicolon.sendAm.dtos.responses.FindPackageResponse;
-import africa.semicolon.sendAm.dtos.responses.RegisterPackageResponse;
+import africa.semicolon.sendAm.dtos.responses.*;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -19,8 +19,8 @@ public class PackageServiceImpl implements PackageService{
     private int id = 0;
 
     @Override
-    public RegisterPackageResponse registerOrder(RegisterPackageRequest packageOrder) {
-        Package order = new Package();
+    public RegisterPackageResponse registerPackage(RegisterPackageRequest packageOrder) {
+        Package packageToBeAdded = new Package();
         PackageDescription order1 = new PackageDescription();
         Status packageStatus = new Status();
         User user = new User();
@@ -29,28 +29,24 @@ public class PackageServiceImpl implements PackageService{
         order1.setName(packageOrder.getWhatToOrder());
         order1.setWeightInGrammes(packageOrder.getQuantity());
 
-//        packageStatus.setStatus("Pending");
-//        var dateTime = packageStatus.getDateTime();
-//        order.setStatusList(List.of(packageStatus.setStatus("pending")));
+        packageStatus.setStatus("Created");
+        packageToBeAdded.getStatusList().add(packageStatus);
 
         user.setEmail(packageOrder.getEmailAddress());
-        order.setOwner(user);
-        order.setId(generateId());
-        order.setDescription(order1);
+        packageToBeAdded.setOwner(user);
+        packageToBeAdded.setId(generateId());
+        packageToBeAdded.setDescription(order1);
 
-        Package savedPackage = packageRepository.save(order);
-        return getRegisterPackageResponse(order, savedPackage);
+        Package savedPackage = packageRepository.save(packageToBeAdded);
+        return getRegisterPackageResponse(packageToBeAdded, savedPackage);
     }
 
     private RegisterPackageResponse getRegisterPackageResponse(Package order, Package savedPackage) {
-
-
 
         RegisterPackageResponse packageOrder1 = new RegisterPackageResponse();
         packageOrder1.setEmailAddress(savedPackage.getOwner().getEmail());
         packageOrder1.setId(savedPackage.getId());
         packageOrder1.setDescription(savedPackage.getDescription());
-//        packageOrder1.setStatus(savedPackage.getStatusList());
 
         return packageOrder1;
     }
@@ -67,7 +63,41 @@ public class PackageServiceImpl implements PackageService{
     }
 
     @Override
-    public FindPackageResponse findPackageByTrackingId(String trackingId) {
+    public UpdateTrackingInfoResponse updateTrackingInfo(UpdateTrackingInfoRequest trackingRequest) {
+
+        Package foundPackage = packageRepository.findById(trackingRequest.getTrackingNumber());
+
+        Status status = new Status();
+        status.setStatus(trackingRequest.getTrackingInfo());
+
+        foundPackage.getStatusList().add(status);
+
+        packageRepository.save(foundPackage);
+
         return null;
     }
+
+    @Override
+    public TrackPackageResponse trackPackage(int trackingNumber) {
+        Package savedPackage = packageRepository.findById(trackingNumber);
+
+        List<Status> statusList = savedPackage.getStatusList();
+
+        TrackPackageResponse response = new TrackPackageResponse();
+
+        for (Status status : statusList) {
+            TrackingInfo info = new TrackingInfo();
+            info.setInformation(status.getStatus());
+            info.setDateTime(DateTimeFormatter.ofPattern("E dd/MM/yyyy hh:mm a")
+                    .format(status.getDateTime()));
+            response.getTrackingInfo().add(info);
+        }
+
+        return response;
+    }
+
+//    @Override
+//    public FindPackageResponse findPackageByTrackingId(String trackingId) {
+//        return null;
+//    }
 }
